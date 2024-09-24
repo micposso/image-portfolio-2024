@@ -73,7 +73,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               className="max-w-[40ch] text-white/75 sm:max-w-[32ch]"
               style={oswald.style}
             >
-              I am a software engineer and tech lead with over a decade of
+              I am a front-end software developer and tech lead with over a decade of
               experience delivering accessible, high-performance web experiences
               for Fortune 500 companies. As a manager, I have led
               cross-functional teams, driving innovation and establishing best
