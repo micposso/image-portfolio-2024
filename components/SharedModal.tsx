@@ -1,6 +1,4 @@
 import {
-  ArrowDownTrayIcon,
-  ArrowTopRightOnSquareIcon,
   ArrowUturnLeftIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -11,7 +9,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { variants } from "../utils/animationVariants";
-import downloadPhoto from "../utils/downloadPhoto";
 import { range } from "../utils/range";
 import type { ImageProps, SharedModalProps } from "../utils/types";
 import Twitter from "./Icons/Twitter";
@@ -45,8 +42,9 @@ export default function SharedModal({
     trackMouse: true,
   });
 
-  let currentImage = images ? images[index] : currentPhoto;
-  const metadata = currentImage?.context?.custom || {}; // Fetching metadata from image context
+  let currentImage = images && images[index] ? images[index] : currentPhoto || { context: { custom: {} } };
+  const metadata = currentImage.context.custom || {};
+
 
   return (
     <MotionConfig

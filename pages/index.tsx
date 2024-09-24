@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import Bg from "../components/Icons/Bg";
-import Logo from "../components/Icons/Logo";
 import Modal from "../components/Modal";
 import cloudinary from "../utils/cloudinary";
 import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
