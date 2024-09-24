@@ -66,7 +66,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             </a>
           </div>
           {images.length > 0 ? (
-            images.map(({ id, public_id, format, blurDataUrl }) => (
+            images.map(({ id, public_id, format, blurDataUrl, context }) => (
               <Link
                 key={id}
                 href={`/?photoId=${id}`}
@@ -76,7 +76,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
                 className="group relative mb-5 block w-full cursor-zoom-in"
               >
                 <Image
-                  alt="Event photo"
+                  alt={context?.custom?.alt || "Michael Posso"}
                   className="transform rounded-lg brightness-90 transition group-hover:brightness-110"
                   style={{ transform: "translate3d(0, 0, 0)" }}
                   placeholder="blur"
@@ -89,7 +89,10 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               </Link>
             ))
           ) : (
-            <p>No images found.</p>
+            <>
+              <p>No images found.</p>
+              {console.log("Images array:", images)}
+            </>
           )}
         </div>
       </main>
@@ -104,11 +107,24 @@ export default Home;
 
 export async function getStaticProps() {
   try {
+    console.log("Fetching images from Cloudinary...");
     const results = await cloudinary.v2.search
       .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
+      .with_field("context")
       .sort_by("public_id", "desc")
       .max_results(400)
       .execute();
+
+    console.log("Cloudinary API response:", results);
+
+    if (!results.resources || results.resources.length === 0) {
+      console.warn("No images found in the specified Cloudinary folder.");
+      return {
+        props: {
+          images: [],
+        },
+      };
+    }
 
     const reducedResults: ImageProps[] = results.resources.map((result, i) => ({
       id: i,
@@ -116,7 +132,10 @@ export async function getStaticProps() {
       width: result.width,
       public_id: result.public_id,
       format: result.format,
+      context: result.context,
     }));
+
+    console.log("Reduced results:", reducedResults);
 
     const blurImagePromises = results.resources.map((image: ImageProps) =>
       getBase64ImageUrl(image)
@@ -126,6 +145,8 @@ export async function getStaticProps() {
     reducedResults.forEach((image, i) => {
       image.blurDataUrl = imagesWithBlurDataUrls[i];
     });
+
+    console.log("Final images with blur data URLs:", reducedResults);
 
     return {
       props: {

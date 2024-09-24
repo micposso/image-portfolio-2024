@@ -12,6 +12,7 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
   const { photoId } = router.query;
   let index = Number(photoId);
 
+  // Construct the image URL for the current photo
   const currentPhotoUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_2560/${currentPhoto.public_id}.${currentPhoto.format}`;
 
   return (
@@ -22,6 +23,13 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
         <meta name="twitter:image" content={currentPhotoUrl} />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
+        {/* Display the context metadata (description or alt) */}
+        <p className="mb-4 text-center text-lg font-medium">
+          {currentPhoto.context?.custom?.description ||
+            "No description available"}
+        </p>
+
+        {/* Carousel component showing the image */}
         <Carousel currentPhoto={currentPhoto} index={index} />
       </main>
     </>
@@ -42,13 +50,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
       width: result.width,
       public_id: result.public_id,
       format: result.format,
+      context: result.context, // Include context metadata
     });
     i++;
   }
 
+  // Find the photo based on the photoId from the URL params
   const currentPhoto = reducedResults.find(
-    (img) => img.id === Number(context.params.photoId),
+    (img) => img.id === Number(context.params.photoId)
   );
+
   currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
 
   return {
