@@ -4,15 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
-import Bridge from "../components/Icons/Bridge";
+import Bg from "../components/Icons/Bg";
 import Logo from "../components/Icons/Logo";
 import Modal from "../components/Modal";
 import cloudinary from "../utils/cloudinary";
 import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
+import { Oswald } from "next/font/google";
+import { Rufina } from "next/font/google";
+
+
+const oswald = Oswald({
+  weight: ["400", "700"], // Specify the font weights you need
+  subsets: ["latin"], // Specify the character subsets
+});
+
+const rufina = Rufina({
+  weight: ["400", "700"], // Specify the font weights you need
+  subsets: ["latin"], // Specify the character subsets
+});
 
 const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
+  const year = new Date().getFullYear();
   const router = useRouter();
   const { photoId } = router.query;
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
@@ -45,25 +59,30 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
           />
         )}
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-          <div className="relative mb-5 flex h-[629px] flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight">
+          <div className="relative mb-5 flex h-screen flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight">
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <Bridge />
+              <Bg />
             </div>
-            <Logo />
-            <h1 className="mb-4 mt-8 text-base font-bold uppercase tracking-widest">
-              Event Photos
-            </h1>
-            <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
-              Check out our event photos gallery!
-            </p>
-            <a
-              className="z-10 mt-6 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-black transition hover:bg-white/10 hover:text-white md:mt-4"
-              href="https://vercel.com/new/clone"
-              target="_blank"
-              rel="noreferrer"
+
+            <h1
+              className="mb-4 mt-8 text-lg font-bold tracking-widest"
+              style={rufina.style}
             >
-              Clone and Deploy
-            </a>
+              Michael Posso
+            </h1>
+            <p
+              className="max-w-[40ch] text-white/75 sm:max-w-[32ch]"
+              style={oswald.style}
+            >
+              I am a software engineer and tech lead with over a decade of
+              experience delivering accessible, high-performance web experiences
+              for Fortune 500 companies. As a manager, I have led
+              cross-functional teams, driving innovation and establishing best
+              practices in web development. Passionate about education, I teach
+              UX/UI design and web development at the undergraduate and graduate
+              levels, helping students merge design thinking with technical
+              execution.
+            </p>
           </div>
           {images.length > 0 ? (
             images.map(({ id, public_id, format, blurDataUrl, context }) => (
@@ -97,7 +116,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        Thank you to the photographers for the pictures.
+        &copy; {year} Michael Posso
       </footer>
     </>
   );
