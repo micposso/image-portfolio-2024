@@ -42,7 +42,14 @@ export default function SharedModal({
     trackMouse: true,
   });
 
-  let currentImage = images && images[index] ? images[index] : currentPhoto || { context: { custom: {} } };
+  let currentImage: ImageProps = images && images[index] ? images[index] : (currentPhoto as ImageProps) || { 
+    id: -1,
+    height: '0',
+    width: '0',
+    public_id: '',
+    format: 'jpg',
+    context: { custom: {} }
+  };
   const metadata = currentImage.context.custom || {};
 
 
@@ -75,7 +82,7 @@ export default function SharedModal({
                     process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
                   }/image/upload/c_scale,${navigation ? "w_1280" : "w_1920"}/${
                     currentImage.public_id
-                  }.${currentImage.format}`}
+                  }.${'format' in currentImage ? currentImage.format : 'jpg'}`}
                   width={navigation ? 1280 : 1920}
                   height={navigation ? 853 : 1280}
                   priority

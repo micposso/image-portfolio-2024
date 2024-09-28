@@ -8,6 +8,7 @@ export interface ImageProps {
   blurDataUrl?: string;
     context?: {
     custom?: {
+      alt: string;
       title?: string;
       description?: string;
     };
