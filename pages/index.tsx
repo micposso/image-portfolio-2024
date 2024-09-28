@@ -62,12 +62,8 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
               <Bg />
             </div>
-
-            <h1
-              className="mb-4 mt-8 text-lg font-bold tracking-widest"
-              style={rufina.style}
-            >
-              Michael Posso
+            <h1 className="mb-4 mt-8 text-base font-bold uppercase tracking-widest">
+              Event Photos
             </h1>
             <p
               className="max-w-[40ch] text-white/75 sm:max-w-[32ch]"
