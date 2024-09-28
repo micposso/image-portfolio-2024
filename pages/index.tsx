@@ -47,11 +47,11 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
           <div className="relative mb-5 flex h-[629px] flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight">
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <Bridge />
+            {/* add bg component here */}
             </div>
+            {/* add logo component here */}
             <Logo />
             <h1 className="mb-4 mt-8 text-base font-bold uppercase tracking-widest">
-              Event Photos
             </h1>
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
               Check out our event photos gallery!
