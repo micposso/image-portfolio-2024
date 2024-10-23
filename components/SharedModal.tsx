@@ -11,7 +11,6 @@ import { useSwipeable } from "react-swipeable";
 import { variants } from "../utils/animationVariants";
 import { range } from "../utils/range";
 import type { ImageProps, SharedModalProps } from "../utils/types";
-import Twitter from "./Icons/Twitter";
 
 export default function SharedModal({
   index,
@@ -42,15 +41,33 @@ export default function SharedModal({
     trackMouse: true,
   });
 
-  let currentImage: ImageProps = images && images[index] ? images[index] : (currentPhoto as ImageProps) || { 
-    id: -1,
-    height: '0',
-    width: '0',
-    public_id: '',
-    format: 'jpg',
-    context: { custom: {} }
-  };
-  const metadata = currentImage.context.custom || {};
+let currentImage: ImageProps =
+  images && images[index]
+    ? images[index]
+    : (currentPhoto as ImageProps) || {
+        id: -1,
+        height: "0",
+        width: "0",
+        public_id: "",
+        format: "jpg",
+        context: {
+          custom: {
+            alt: "default alt text", // Provide a default alt text here
+            title: "", // Optional, but can include an empty string if needed
+            description: "", // Optional, but can include an empty string if needed
+          },
+        },
+      };
+
+const metadata: {
+  alt: string;
+  title?: string;
+  description?: string;
+} = currentImage.context?.custom || {
+  alt: "default alt text",
+  title: "",
+  description: "",
+};
 
 
   return (
