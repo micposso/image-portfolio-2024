@@ -119,6 +119,33 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
 export default Home;
 
+// Utility function to recursively convert undefined values to null
+const convertUndefinedToNull = (obj: any) => {
+  if (obj && typeof obj === 'object') {
+    for (const key in obj) {
+      if (obj[key] === undefined) {
+        obj[key] = null;
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        convertUndefinedToNull(obj[key]);
+      }
+    }
+  }
+  return obj;
+};
+// Utility function to deeply replace undefined values with null
+const replaceUndefinedWithNull = (obj: any) => {
+  if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+    for (const key in obj) {
+      if (obj[key] === undefined) {
+        obj[key] = null;
+      } else if (typeof obj[key] === "object") {
+        replaceUndefinedWithNull(obj[key]);
+      }
+    }
+  }
+  return obj;
+};
+
 export async function getStaticProps() {
   try {
     console.log("Fetching images from Cloudinary...");
@@ -157,22 +184,25 @@ export async function getStaticProps() {
         : null,
     }));
 
-    console.log("Reduced results:", reducedResults);
+    // Clean the reducedResults array by replacing undefined values with null
+    const cleanedResults = reducedResults.map((image) => replaceUndefinedWithNull(image));
+
+    console.log("Cleaned results:", cleanedResults);
 
     const blurImagePromises = results.resources.map((image: ImageProps) =>
       getBase64ImageUrl(image)
     );
     const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
 
-    reducedResults.forEach((image, i) => {
+    cleanedResults.forEach((image, i) => {
       image.blurDataUrl = imagesWithBlurDataUrls[i];
     });
 
-    console.log("Final images with blur data URLs:", reducedResults);
+    console.log("Final images with blur data URLs:", cleanedResults);
 
     return {
       props: {
-        images: reducedResults,
+        images: cleanedResults,
       },
     };
   } catch (error) {
