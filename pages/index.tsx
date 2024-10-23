@@ -146,7 +146,15 @@ export async function getStaticProps() {
       width: result.width,
       public_id: result.public_id,
       format: result.format,
-      context: result.context,
+      context: result.context
+        ? {
+            custom: {
+              alt: result.context.custom?.alt || "No alt text",
+              title: result.context.custom?.title || null,
+              description: result.context.custom?.description || null,
+            },
+          }
+        : null,
     }));
 
     console.log("Reduced results:", reducedResults);
