@@ -37,9 +37,22 @@ const Home: NextPage = ({ currentPhoto }: { currentPhoto: ImageProps }) => {
 };
 
 export default Home;
-
 export const getStaticProps: GetStaticProps = async (context) => {
   const results = await getResults();
+
+  // Helper function to replace undefined values with null recursively
+  const replaceUndefinedWithNull = (obj: any) => {
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+      for (const key in obj) {
+        if (obj[key] === undefined) {
+          obj[key] = null;
+        } else if (typeof obj[key] === "object") {
+          replaceUndefinedWithNull(obj[key]);
+        }
+      }
+    }
+    return obj;
+  };
 
   let reducedResults: ImageProps[] = [];
   let i = 0;
@@ -50,17 +63,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
       width: result.width,
       public_id: result.public_id,
       format: result.format,
-      context: result.context, // Include context metadata
+      context: result.context
+        ? {
+            custom: {
+              alt: result.context.custom?.alt || "No alt text",
+              title: result.context.custom?.title || null,
+              description: result.context.custom?.description || null,
+            },
+          }
+        : null,
     });
     i++;
   }
 
   // Find the photo based on the photoId from the URL params
-  const currentPhoto = reducedResults.find(
+  let currentPhoto = reducedResults.find(
     (img) => img.id === Number(context.params.photoId)
   );
 
+  // If currentPhoto is undefined, throw an error or return a fallback (optional based on your logic)
+  if (!currentPhoto) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // Generate the blur data URL for the image
   currentPhoto.blurDataUrl = await getBase64ImageUrl(currentPhoto);
+
+  // Clean the currentPhoto object to replace undefined values with null
+  currentPhoto = replaceUndefinedWithNull(currentPhoto);
 
   return {
     props: {
@@ -69,20 +101,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
+// Add this new function
 export async function getStaticPaths() {
-  const results = await cloudinary.v2.search
-    .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
-    .sort_by("public_id", "desc")
-    .max_results(400)
-    .execute();
-
-  let fullPaths = [];
-  for (let i = 0; i < results.resources.length; i++) {
-    fullPaths.push({ params: { photoId: i.toString() } });
-  }
+  const results = await getResults();
+  
+  const paths = results.resources.map((result, index) => ({
+    params: { photoId: index.toString() },
+  }));
 
   return {
-    paths: fullPaths,
+    paths,
     fallback: false,
   };
 }
