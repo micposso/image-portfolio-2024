@@ -42,10 +42,10 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   return (
     <>
       <Head>
-        <title>Event Photos</title>
+        <title>Michael Posso | Full Stack Developer | UX Engineer | Educator</title>
         <meta
           name="description"
-          content="Event photos gallery using Cloudinary and Next.js"
+          content="Based in New York City, I am a software engineer and tech lead with over a decade of experience delivering accessible, high-performance web experiences for Fortune 500 companies."
         />
       </Head>
       <main className="mx-auto max-w-[1960px] p-4">
