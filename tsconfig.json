@@ -16,5 +16,6 @@
     "jsx": "preserve"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["pages/**/*", "public/**/*", "utils/**/*"], // or "types/**/*" if using a types folder
   "exclude": ["node_modules"]
 }
